@@ -12,22 +12,38 @@ export default function UserList() {
   const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
-    userService.getAll().then(result => {setUsers(result)});
+    userService.getAll().then((result) => {
+      setUsers(result);
+    });
   }, []);
 
   const createUserClickHandler = () => {
     setShowCreate(true);
-  }
+  };
 
   const closeCreateUserClickHandler = () => {
     setShowCreate(false);
-  }
+  };
+
+  const saveCreateUserClickHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData);
+    const newUser = userService.create(userData);
+    setUsers(state => [...state, newUser]);
+    setShowCreate(false);
+  };
 
   return (
     <section className="card users-container">
       <Search />
 
-      {showCreate && <UserCreate onClose={closeCreateUserClickHandler} />}
+      {showCreate && (
+        <UserCreate
+          onClose={closeCreateUserClickHandler}
+          onSave={saveCreateUserClickHandler}
+        />
+      )}
 
       <div className="table-wrapper">
         <div className="overlays">
@@ -179,13 +195,17 @@ export default function UserList() {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => <UserListItem key={user._id} {...user} />)}
+            {users.map((user) => (
+              <UserListItem key={user._id} {...user} />
+            ))}
             <UserListItem />
           </tbody>
         </table>
       </div>
 
-      <button className="btn-add btn" onClick={createUserClickHandler}>Add new user</button>
+      <button className="btn-add btn" onClick={createUserClickHandler}>
+        Add new user
+      </button>
       <Pagination />
     </section>
   );
