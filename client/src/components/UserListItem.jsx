@@ -1,22 +1,19 @@
 import { fromIsoDate } from "../utils/datetimeUtils";
 
 export default function UserListItem({
-    firstName, 
-    lastName,
-    email,
-    phoneNumber,
-    createdAt,
-    imageUrl,
+  _id,
+  firstName,
+  lastName,
+  email,
+  phoneNumber,
+  createdAt,
+  imageUrl,
+  onInfoClick,
 }) {
-
   return (
     <tr>
       <td>
-        <img
-          src={imageUrl}
-          alt={`${firstName}'s profile`}
-          className="image"
-        />
+        <img src={imageUrl} alt={`${firstName}'s profile`} className="image" />
       </td>
       <td>{firstName}</td>
       <td>{lastName}</td>
@@ -59,7 +56,11 @@ export default function UserListItem({
             ></path>
           </svg>
         </button>
-        <button className="btn info-btn" title="Info">
+        <button
+          className="btn info-btn"
+          title="Info"
+          onClick={() => onInfoClick(_id)}
+        >
           <svg
             aria-hidden="true"
             focusable="false"
