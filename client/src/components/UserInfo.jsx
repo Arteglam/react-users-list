@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import userService from "../services/userService";
 import { fromIsoDate } from "../utils/datetimeUtils";
 
-export default function UserInfo({ userId }) {
+export default function UserInfo({ 
+    userId, 
+    onClose 
+}) {
   const [user, setUser] = useState({});
   useEffect(() => {
     userService.getOne(userId).then((result) => {
@@ -12,12 +15,12 @@ export default function UserInfo({ userId }) {
 
   return (
     <div className="overlay">
-      <div className="backdrop"></div>
+      <div className="backdrop" onClick={onClose}></div>
       <div className="modal">
         <div className="detail-container">
           <header className="headers">
             <h2>User Detail</h2>
-            <button className="btn close">
+            <button className="btn close" onClick={onClose}>
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -59,7 +62,7 @@ export default function UserInfo({ userId }) {
               </p>
               <p>
                 Address:
-                <strong> {user.country}, {user.city}, {user.street}, {user.streetNumber} </strong>
+                <strong> {user.address?.country}, {user.address?.city}, {user.address?.street}, {user.address?.streetNumber} </strong>
               </p>
 
               <p>

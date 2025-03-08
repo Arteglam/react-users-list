@@ -7,11 +7,13 @@ import Search from "./Search";
 import UserListItem from "./UserListItem";
 import UserCreate from "./userCreate";
 import UserInfo from "./UserInfo";
+import UserDelete from "./UserDelete";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
-  const [userIdInfo, setUserIdInfo] = useState(); 
+  const [userIdInfo, setUserIdInfo] = useState(null);
+  const [userIdDelete, setUserIdDelete] = useState(null);
 
   useEffect(() => {
     userService.getAll().then((result) => {
@@ -32,13 +34,31 @@ export default function UserList() {
     const formData = new FormData(e.target);
     const userData = Object.fromEntries(formData);
     const newUser = userService.create(userData);
-    setUsers(state => [...state, newUser]);
+    setUsers((state) => [...state, newUser]);
     setShowCreate(false);
   };
 
   const userInfoClickHandler = (userId) => {
     setUserIdInfo(userId);
-  }
+  };
+
+  const userInfoCloseHandler = () => {
+    setUserIdInfo(null);
+  };
+
+  const userDeleteClickHandler = (userId) => {
+    setUserIdDelete(userId);
+  };
+
+  const userDeleteCloseHandler = () => {
+    setUserIdDelete(null);
+  };
+
+  const userDeleteHandler = async () => {
+    await userService.delete(userIdDelete);
+    setUsers((state) => state.filter((user) => user._id !== userIdDelete));
+    setUserIdDelete(null);
+  };
 
   return (
     <section className="card users-container">
@@ -51,11 +71,16 @@ export default function UserList() {
         />
       )}
 
-     {userIdInfo && (
-        <UserInfo 
-            userId={userIdInfo}
+      {userIdInfo && (
+        <UserInfo userId={userIdInfo} onClose={userInfoCloseHandler} />
+      )}
+
+      {userIdDelete && (
+        <UserDelete
+          onClose={userDeleteCloseHandler}
+          onDelete={userDeleteHandler}
         />
-        )}
+      )}
 
       <div className="table-wrapper">
         <div className="overlays">
@@ -208,9 +233,12 @@ export default function UserList() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <UserListItem key={user._id} 
-              onInfoClick={userInfoClickHandler}
-              {...user} />
+              <UserListItem
+                key={user._id}
+                onInfoClick={userInfoClickHandler}
+                onDeleteClick={userDeleteClickHandler}
+                {...user}
+              />
             ))}
             <UserListItem />
           </tbody>
