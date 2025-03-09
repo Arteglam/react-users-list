@@ -11,6 +11,7 @@ import UserDelete from "./UserDelete";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
+  // const [displayUsers, setDisplayUsers] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
   const [userIdInfo, setUserIdInfo] = useState(null);
   const [userIdDelete, setUserIdDelete] = useState(null);
@@ -21,6 +22,10 @@ export default function UserList() {
       setUsers(result);
     });
   }, []);
+
+  // useEffect(() => {
+  //   setDisplayUsers(users);
+  // }, [users, filter, sort]);
 
   const createUserClickHandler = () => {
     setShowCreate(true);
